@@ -76,3 +76,18 @@ def traverse_counter_clockwise(matrix: List[List[int]]) -> List[int]:
         top += 1
 
     return result
+
+async def get_matrix(url: str) -> List[int]:
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        try:
+            response = await client.get(url)
+            response.raise_for_status()
+        except httpx.HTTPStatusError as e:
+            raise RuntimeError(f"Ошибка сервера") from e 
+        except httpx.TimeoutException as e:
+            raise TimeoutError(f"Превышено время ожидания ответа от сервера") from e
+        except httpx.RequestError as e:
+            raise ConnectionError(f"Ошибка соединения с сервером") from e
+
+        matrix = parse_matrix_text(response.text)
+        return traverse_counter_clockwise(matrix)
