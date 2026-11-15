@@ -1,9 +1,12 @@
 from typing import List
 import httpx
 
+class MatrixParseError(ValueError):
+    pass
+
 def parse_matrix_text(text: str) -> List[List[int]]:
     """парсинг текстовой матрицы в двумерный список чисел """
-    
+
     lines = text.strip().splitlines()
     matrix_rows: List[List[int]] = []
     
@@ -34,3 +37,42 @@ def parse_matrix_text(text: str) -> List[List[int]]:
             raise MatrixParseError(f"Матрица не квадратная.")
 
     return matrix_rows
+
+def traverse_counter_clockwise(matrix: List[List[int]]) -> List[int]:
+    """Обход квадратной матрицы по спирали против часовой стрелки, начиная с левого верхнего угла (0, 0)"""
+
+    if not matrix or not matrix[0]:
+        return []
+
+    n = len(matrix)
+    top, bottom = 0, n-1
+    left, right = 0, n -1
+    result: List[int] = []
+
+    while top <= bottom and left <= right:
+        for row in range(top,bottom + 1):
+            result.append(matrix[row][left])
+        left += 1
+
+        if left > right:
+            break
+
+        for col in range(left, right+1):
+            result.append(matrix[bottom][col])
+        bottom -= 1
+
+        if top> bottom:
+            break
+
+        for row in range(bottom, top -1, -1):
+            result.append(matrix[row][right])
+        right -= 1
+
+        if left > right:
+            break
+
+        for col in range(right, left -1, -1 ):
+            result.append(matrix[top][col])
+        top += 1
+
+    return result
