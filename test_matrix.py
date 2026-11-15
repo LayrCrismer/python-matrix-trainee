@@ -1,7 +1,5 @@
 import asyncio
-import pytest
-from httpx import Response
-from matrix_loader import get_matrix, traverse_counter_clockwise, parse_matrix_text, MatrixParseError
+from matrix_loader import get_matrix
 
 SOURCE_URL = 'https://raw.githubusercontent.com/avito-tech/python-trainee-assignment/main/matrix.txt'
 TRAVERSAL = [
